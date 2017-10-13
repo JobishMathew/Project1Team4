@@ -23,7 +23,7 @@ public class Shift {
         public String lunchstop;
         public String lunchdeduct;
         public String maxtime;
-        public String overtimethreshold;
+        public String overtimethreshold; ////
         
         public Shift() {
             System.out.println("No shift information recieved.");
