@@ -46,15 +46,15 @@ public Badge getBadge(String badge) throws SQLException{
     }
 public Punch getPunch( int id ) throws SQLException{
         st = conn.createStatement();
-        queryPunches = "SELECT terminalid, badgeid, originaltimestamp, eventtypeid, eventdata, adjustedtimestamp FROM event WHERE id = '"+id+"'";
+        queryPunches = "SELECT * FROM event WHERE id = '"+id+"'";
         ResultSet rs = st.executeQuery(queryPunches);
         //int punchId;
-        String terminalId = "";
+        String terminalId = null;
         String badgeId = null;
-        String originalTimestamp = "";
+        String originalTimestamp = null; //need to get this as long
         String eventTypeId = null;
         String eventData = null;
-        String adjustedTimeStamp = null;
+        String adjustedTimeStamp = null; //need to get this as long
         
         
         while(rs.next()){

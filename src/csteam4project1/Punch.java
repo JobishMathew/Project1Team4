@@ -7,10 +7,10 @@ import java.util.*;
 public class Punch { 
 	private String terminalID;
 	private String badgeID; 
-	private String originalTimeStamp;
+	private String originalTimeStamp; //change to GregorianCal 
 	private String eventTypeID;
 	private String eventData;
-	private String adjustedTimeStamp;
+	private String adjustedTimeStamp; //Change to GregorianCal
 	private Calendar cal;
 	
 	public Punch (String terminalID, String badgeID, String originalTimeStamp, String eventTypeID, 
