@@ -4,46 +4,37 @@ import java.util.*;
  *
  * @author Aaron Branham and Cole Landers
  */
-public class Punch { 
-	private String terminalID;
+public class Punch {
+	private int punchID; 
+	private int terminalID;
 	private String badgeID; 
-	private String originalTimeStamp; //change to GregorianCal 
-	private String eventTypeID;
+	private GregorianCalendar originalTimeStamp; //change to GregorianCal 
+	private int eventTypeID;
 	private String eventData;
-	private String adjustedTimeStamp; //Change to GregorianCal
-	private Calendar cal;
+	private GregorianCalendar adjustedTimeStamp; //Change to GregorianCal
 	
-	public Punch (String terminalID, String badgeID, String originalTimeStamp, String eventTypeID, 
-									String eventData,String adjustedTimeStamp) {
+	public Punch (int punchID, int terminalID, String badgeID, long 
+				 originalTimeStamp, int eventTypeID, String 
+				 eventData,long adjustedTimeStamp) {
+		this.punchID = punchID;
 		this.terminalID = terminalID;
 		this.badgeID = badgeID;
-		this.originalTimeStamp = originalTimeStamp;
+		this.originalTimeStamp = new GregorianCalendar();
+		this.originalTimeStamp.setTimeInMillis(originalTimeStamp);
 		this.eventTypeID = eventTypeID;
 		this.eventData = eventData;
-		this.adjustedTimeStamp = adjustedTimeStamp;
-		cal = toGregorian(originalTimeStamp);
+		this.adjustedTimeStamp = new GregorianCalendar();
+		this.adjustedTimeStamp.setTimeInMillis(adjustedTimeStamp);
 	}
 	
-	private String getEventType(String eventTypeID) {
-		if (eventTypeID.equals("0")) return "CLOCKED OUT: ";
-		else if (eventTypeID.equals("1")) return "CLOCKED IN: ";
+	private String getEventType(int eventTypeID) {
+		if (eventTypeID == 0) return "CLOCKED OUT: ";
+		else if (eventTypeID == 1) return "CLOCKED IN: ";
 		else return "TIMED OUT: ";
 	}
 	
-	private Calendar toGregorian(String originalTimeStamp) {
-		int year = Integer.parseInt(originalTimeStamp.substring(0,4));
-		int month = Integer.parseInt(originalTimeStamp.substring(5,7));
-		int dayOfMonth = Integer.parseInt(originalTimeStamp.substring(8,10));
-		int hourOfDay = Integer.parseInt(originalTimeStamp.substring(11,13));
-		int minute = Integer.parseInt(originalTimeStamp.substring(14,16));
-		int second = Integer.parseInt(originalTimeStamp.substring(17,19));
-		cal = GregorianCalendar.getInstance();
-		cal.set(year, month - 1, dayOfMonth, hourOfDay, minute, second);
-		return cal;
-	}
-	
-	public void setAdjustedTimestamp(String ats) {
-		adjustedTimeStamp = ats;
+	public void setAdjustedTimestamp(long ats) {
+		adjustedTimeStamp.setTimeInMillis(ats);
 	}
 	
 	public String printAdjustedTimestamp() {
@@ -55,10 +46,10 @@ public class Punch {
 		else return padding + "";
 	}
         
-        private String correctDOW(String DOW){
-            String correctDOW = DOW.toUpperCase();
-            return correctDOW;
-        }
+    private String correctDOW(String DOW){
+        String correctDOW = DOW.toUpperCase();
+        return correctDOW;
+    }
 	
 	public String printOriginalTimestamp() {
 		return "#" + badgeID + " " + getEventType(eventTypeID) + correctDOW(cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()))

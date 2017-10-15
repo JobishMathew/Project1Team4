@@ -6,10 +6,10 @@ import java.util.logging.Logger;
 public class Database{
     
      private static Connection conn = null;
-     //private static String myDriver = null;
      private String myUrl = null;
      private String queryBadge = null;
      private String queryPunches = null;
+     private String queryPunchTS = null;
      private String queryShifts= null;
      private Statement st;
     
@@ -21,7 +21,6 @@ public Database() throws ClassNotFoundException{
            
         } 
         catch (SQLException ex) {
-            // handle any errors
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
@@ -41,39 +40,35 @@ public Badge getBadge(String badge) throws SQLException{
         }
          st.close();
          Badge b = new Badge(badgeId, badgeDescription);
-        //return new String[] {badgeId, badgeDescription} ;
         return b;
     }
-public Punch getPunch( int id ) throws SQLException{
+public Punch getPunch(int id) throws SQLException{
         st = conn.createStatement();
         queryPunches = "SELECT * FROM event WHERE id = '"+id+"'";
+        queryPunchTS = "SELECT UNIX_TIMESTAMP, SELECT UNIX_TIMESTAMP  FROM event WHERE id = '"+id+"'";
         ResultSet rs = st.executeQuery(queryPunches);
-        //int punchId;
-        String terminalId = null;
+        ResultSet rsTimeStamps = st.executeQuery(queryPunchTS);
+
+        int punchID = id;
+        int terminalId = null;
         String badgeId = null;
-        String originalTimestamp = null; //need to get this as long
-        String eventTypeId = null;
+        long originalTimestamp = null;
+        int eventTypeId = null;
         String eventData = null;
-        String adjustedTimeStamp = null; //need to get this as long
+        long adjustedTimeStamp = null;
         
         
         while(rs.next()){
-            //punchId = String.valueOf(rs.getInt("id"));
-            //punchId = rs.getInt("id");
-           // System.out.println(punchId);
-            terminalId = String.valueOf(rs.getInt("terminalid"));
-            //System.out.println(terminalId);
+            terminalId = rs.getInt("terminalid"));
             badgeId = rs.getString("badgeid");
-           // System.out.println(badgeId);
-            originalTimestamp = String.valueOf(rs.getTimestamp("originaltimestamp"));
-            eventTypeId = String.valueOf(rs.getInt("eventtypeid"));
+            originalTimestamp = rsTimeStamps.getLong("originaltimestamp"));
+            eventTypeId = rs.getInt("eventtypeid"));
             eventData = rs.getString("eventdata");
-            adjustedTimeStamp = rs.getString("adjustedtimestamp");
+            adjustedTimeStamp = rsTimeStamps.getLong("adjustedtimestamp");
             
           }
          st.close();
-         Punch p = new Punch(terminalId,badgeId,originalTimestamp, eventTypeId, eventData, adjustedTimeStamp  );
-    //return new String[] {terminalId, badgeId,originalTimestamp};
+         Punch p = new Punch(punchID, terminalId,badgeId,originalTimestamp, eventTypeId, eventData, adjustedTimeStamp  );
     return p;
 }
 
@@ -111,7 +106,6 @@ public Shift getShift(int id) throws SQLException{
     }
     st.close();
     Shift sc = new Shift(shiftId,descrp,start,stop, interval, gracePeriod,dock, lunchStart,lunchStop,lunchDeduct, maxTime, overTimeThreshold);
-    //return new String[] {shiftId, start,stop, lunchStart,lunchStop };
     return sc;
 }
 public void close(Statement st){
