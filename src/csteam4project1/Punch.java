@@ -1,4 +1,5 @@
 package csteam4project1;
+import java.sql.Timestamp;
 import java.util.*;
 /**
  *
@@ -7,9 +8,9 @@ import java.util.*;
 public class Punch { 
 	private String terminalID;
 	private String badgeID; 
-	private String originalTimeStamp; //change to GregorianCal 
-	private String eventTypeID;
-	private String eventData;
+        private String originalTimeStamp; //change to GregorianCal 
+        private String eventTypeID;
+        private String eventData;
 	private String adjustedTimeStamp; //Change to GregorianCal
 	private Calendar cal;
 	
@@ -21,6 +22,11 @@ public class Punch {
 		this.eventTypeID = eventTypeID;
 		this.eventData = eventData;
 		this.adjustedTimeStamp = adjustedTimeStamp;
+                GregorianCalendar calendar = new GregorianCalendar();
+                Timestamp ts2 = Timestamp.valueOf("2017-08-01 05:54:04");
+                long ts2Time = ts2.getTime();
+                calendar.setTimeInMillis(ts2Time);
+                System.out.println(ts2Time);
 		cal = toGregorian(originalTimeStamp);
 	}
 	
