@@ -1,17 +1,14 @@
 package csteam4project1;
 import java.util.*;
-/**
- *
- * @author Aaron Branham and Cole Landers
- */
+
 public class Punch {
 	private int punchID; 
 	private int terminalID;
 	private String badgeID; 
-	private GregorianCalendar originalTimeStamp; //change to GregorianCal 
+	private GregorianCalendar originalTimeStamp;
 	private int eventTypeID;
 	private String eventData;
-	private GregorianCalendar adjustedTimeStamp; //Change to GregorianCal
+	private GregorianCalendar adjustedTimeStamp;
 	
 	public Punch (int punchID, int terminalID, String badgeID, long 
 				 originalTimeStamp, int eventTypeID, String 
@@ -37,7 +34,7 @@ public class Punch {
 		adjustedTimeStamp.setTimeInMillis(ats);
 	}
 	
-	public String printAdjustedTimestamp() {
+	public GregorianCalendar printAdjustedTimestamp() {
 		return adjustedTimeStamp;
 	}
 	
@@ -52,8 +49,8 @@ public class Punch {
     }
 	
 	public String printOriginalTimestamp() {
-		return "#" + badgeID + " " + getEventType(eventTypeID) + correctDOW(cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()))
-		+ " " + padInt(cal.get(Calendar.MONTH) + 1) + "/" + padInt(cal.get(Calendar.DAY_OF_MONTH)) + "/" + cal.get(Calendar.YEAR) + 
-		" " + padInt(cal.get(Calendar.HOUR_OF_DAY)) + ":" + padInt(cal.get(Calendar.MINUTE)) + ":" + padInt(cal.get(Calendar.SECOND));
+		return "#" + badgeID + " " + getEventType(eventTypeID) + correctDOW(originalTimeStamp.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()))
+		+ " " + padInt(originalTimeStamp.get(Calendar.MONTH) + 1) + "/" + padInt(originalTimeStamp.get(Calendar.DAY_OF_MONTH)) + "/" + originalTimeStamp.get(Calendar.YEAR) + 
+		" " + padInt(originalTimeStamp.get(Calendar.HOUR_OF_DAY)) + ":" + padInt(originalTimeStamp.get(Calendar.MINUTE)) + ":" + padInt(originalTimeStamp.get(Calendar.SECOND));
 	}
 }

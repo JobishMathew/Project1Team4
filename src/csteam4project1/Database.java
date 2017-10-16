@@ -5,20 +5,19 @@ import java.util.logging.Logger;
 
 public class Database{
     
-     private static Connection conn = null;
-     private String myUrl = null;
-     private String queryBadge = null;
-     private String queryPunches = null;
-     private String queryPunchTS = null;
-     private String queryShifts= null;
-     private Statement st;
+    private static Connection conn = null;
+    private String myUrl = null;
+    private String queryBadge = null;
+    private String queryPunches = null;
+    private String queryShifts= null;
+    private Statement st;
     
-public Database() throws ClassNotFoundException{
-    try {
-           myUrl = "jdbc:mysql://localhost/tas";
-           Class.forName("com.mysql.jdbc.Driver");
-           conn = DriverManager.getConnection(myUrl,"Tasuser", "tasuser");
-           
+    public Database() throws ClassNotFoundException{
+        try{
+            myUrl = "jdbc:mysql://localhost/tas";
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(myUrl,"Tasuser", "tasuser");
+               
         } 
         catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
@@ -26,11 +25,12 @@ public Database() throws ClassNotFoundException{
             System.out.println("VendorError: " + ex.getErrorCode());
         }
     }
-public Badge getBadge(String badge) throws SQLException{
-        
+    public Badge getBadge(String badge) throws SQLException{
+
         st = conn.createStatement();
         queryBadge = "SELECT * FROM badge WHERE id = '"+ badge +"'";
         ResultSet rs = st.executeQuery(queryBadge);
+
         String badgeId = null;
         String badgeDescription = null;
         
@@ -38,82 +38,94 @@ public Badge getBadge(String badge) throws SQLException{
             badgeId = rs.getString("id");
             badgeDescription = rs.getString("description");
         }
-         st.close();
-         Badge b = new Badge(badgeId, badgeDescription);
+        close(st);
+
+        Badge b = new Badge(badgeId, badgeDescription);
+        
         return b;
     }
-public Punch getPunch(int id) throws SQLException{
+
+    public Punch getPunch(int id) throws SQLException{
+
         st = conn.createStatement();
         queryPunches = "SELECT * FROM event WHERE id = '"+id+"'";
-        queryPunchTS = "SELECT UNIX_TIMESTAMP, SELECT UNIX_TIMESTAMP  FROM event WHERE id = '"+id+"'";
         ResultSet rs = st.executeQuery(queryPunches);
-        ResultSet rsTimeStamps = st.executeQuery(queryPunchTS);
 
-        int punchID = id;
-        int terminalId = null;
+        int punchID = 0;
+        int terminalId = 0;
         String badgeId = null;
-        long originalTimestamp = null;
-        int eventTypeId = null;
+        long originalTimestamp = 0;
+        Timestamp ogTimestamp = null;
+        int eventTypeId = 0;
         String eventData = null;
-        long adjustedTimeStamp = null;
+        long adjustedTimestamp = 0;
+        Timestamp adjTimestamp = null;
         
         
         while(rs.next()){
-            terminalId = rs.getInt("terminalid"));
+            punchID = rs.getInt("id");
+            terminalId = rs.getInt("terminalid");
             badgeId = rs.getString("badgeid");
-            originalTimestamp = rsTimeStamps.getLong("originaltimestamp"));
-            eventTypeId = rs.getInt("eventtypeid"));
+            ogTimestamp = rs.getTimestamp("originaltimestamp");
+            originalTimestamp = ogTimestamp.getTime();
+            eventTypeId = rs.getInt("eventtypeid");
             eventData = rs.getString("eventdata");
-            adjustedTimeStamp = rsTimeStamps.getLong("adjustedtimestamp");
-            
-          }
-         st.close();
-         Punch p = new Punch(punchID, terminalId,badgeId,originalTimestamp, eventTypeId, eventData, adjustedTimeStamp  );
-    return p;
-}
+            adjTimestamp = rs.getTimestamp("adjustedtimestamp");
+            if(adjTimestamp != null){adjustedTimestamp = adjTimestamp.getTime();}
+            }
+        close(st);
 
-public Shift getShift(int id) throws SQLException{
-    st = conn.createStatement();
-    queryShifts = "SELECT * FROM shift WHERE id = '"+id+"'";
-    ResultSet rs = st.executeQuery(queryShifts);
-    String shiftId = null;
-    String descrp = null;
-    String start = null;
-    String stop = null;
-    String interval = null;
-    String gracePeriod = null;
-    String dock = null;
-    String lunchStart = null;
-    String  lunchStop = null;
-    String lunchDeduct = null;
-    String maxTime = null;
-    String overTimeThreshold = null;
-    
-    
-    while(rs.next()){
-        shiftId = String.valueOf(rs.getInt("id"));
-        descrp = rs.getString("description");
-        start = String.valueOf(rs.getTime("start"));
-        stop = String.valueOf(rs.getTime("stop"));
-        interval = String.valueOf(rs.getInt("interval"));
-        gracePeriod = String.valueOf(rs.getInt("graceperiod"));
-        dock = String.valueOf(rs.getInt("dock"));
-        lunchStart = String.valueOf(rs.getTime("lunchstart"));
-        lunchStop = String.valueOf(rs.getTime("lunchstop"));
-        lunchDeduct = String.valueOf(rs.getInt("lunchdeduct"));
-        maxTime = String.valueOf(rs.getInt("maxtime"));
-        overTimeThreshold = String.valueOf(rs.getInt("overtimethreshold"));
+        Punch p = new Punch(punchID, terminalId, badgeId, originalTimestamp, eventTypeId, eventData, adjustedTimestamp);
+
+    return p;
     }
-    st.close();
-    Shift sc = new Shift(shiftId,descrp,start,stop, interval, gracePeriod,dock, lunchStart,lunchStop,lunchDeduct, maxTime, overTimeThreshold);
-    return sc;
-}
+
+    public Shift getShift(int id) throws SQLException{
+        st = conn.createStatement();
+        queryShifts = "SELECT * FROM shift WHERE id = '"+id+"'";
+        ResultSet rs = st.executeQuery(queryShifts);
+
+        int shiftId = 0;
+        String description = null;
+        Time start = null;
+        Time stop = null;
+        int interval = 0;
+        int gracePeriod = 0;
+        int dock = 0;
+        Time lunchStart = null;
+        Time  lunchStop = null;
+        int lunchDeduct = 0;
+        int maxTime = 0;
+        int overTimeThreshold = 0;
+        
+        
+        while(rs.next()){
+            shiftId = rs.getInt("id");
+            description = rs.getString("description");
+            start = rs.getTime("start");
+            stop = rs.getTime("stop");
+            interval = rs.getInt("interval");
+            gracePeriod = rs.getInt("graceperiod");
+            dock = rs.getInt("dock");
+            lunchStart = rs.getTime("lunchstart");
+            lunchStop = rs.getTime("lunchstop");
+            lunchDeduct = rs.getInt("lunchdeduct");
+            maxTime = rs.getInt("maxtime");
+            overTimeThreshold = rs.getInt("overtimethreshold");
+        }
+        close(st);
+
+        Shift sc = new Shift(shiftId, description, start, stop, interval, gracePeriod, dock, lunchStart, lunchStop, lunchDeduct, maxTime, overTimeThreshold);
+
+        return sc;
+    }
 public void close(Statement st){
-         try {
-             st.close();
-         } catch (SQLException ex) {
-             Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
-         }
+        try {
+            st.close();
+        } 
+        catch (SQLException ex) {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 }
