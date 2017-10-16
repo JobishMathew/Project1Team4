@@ -1,14 +1,17 @@
 package csteam4project1;
+import java.sql.Timestamp;
 import java.util.*;
 
 public class Punch {
 	private int punchID; 
 	private int terminalID;
 	private String badgeID; 
+
 	private GregorianCalendar originalTimeStamp;
 	private int eventTypeID;
 	private String eventData;
 	private GregorianCalendar adjustedTimeStamp;
+
 	
 	public Punch (int punchID, int terminalID, String badgeID, long 
 				 originalTimeStamp, int eventTypeID, String 
@@ -20,8 +23,10 @@ public class Punch {
 		this.originalTimeStamp.setTimeInMillis(originalTimeStamp);
 		this.eventTypeID = eventTypeID;
 		this.eventData = eventData;
+
 		this.adjustedTimeStamp = new GregorianCalendar();
 		this.adjustedTimeStamp.setTimeInMillis(adjustedTimeStamp);
+
 	}
 	
 	private String getEventType(int eventTypeID) {
