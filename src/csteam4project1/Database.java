@@ -1,5 +1,6 @@
 package csteam4project1;
 import java.sql.*;
+import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -11,7 +12,7 @@ public class Database{
     private String queryPunches = null;
     private String queryShifts= null;
     private Statement st;
-    private PreparedStatement preparedSt;
+    private Statement preparedSt;
     
     public Database() throws ClassNotFoundException{
         try{
@@ -122,12 +123,15 @@ public class Database{
     }
 
     public int insertPunch(Punch p) throws SQLException{
-    	String queryInsertPunch = "INSERT INTO event values(?,?,?)";
-    	preparedSt = conn.prepareStatement(queryInsertPunch);
+        
+        int terminalID = p.getTerminalID();
+        String badgeID = p.getBadgeID();
+        int eventTypeID = p.getEventTypeID();
+        
+    	preparedSt = conn.createStatement();
+    	int queryInsertPunch = preparedSt.executeUpdate("INSERT INTO event (terminalid, badgeid, eventtypeid) VALUES(" + terminalID+","+ badgeID+ ","+ eventTypeID+")");
 
-    	int punchID = p.getPunchID();
-
-    	return pucnhID;
+    	return queryInsertPunch;
     }
 
 	public void close(Statement st){
