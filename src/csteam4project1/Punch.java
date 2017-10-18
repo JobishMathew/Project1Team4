@@ -10,6 +10,16 @@ public class Punch {
 	private String eventData;
 	private GregorianCalendar adjustedTimeStamp;
 	
+    public Punch(String badgeID, int terminalID, int eventTypeID){
+        this.punchID = 0;
+        this.terminalID = terminalID;
+        this.badgeID = badgeID;
+        this.originalTimeStamp = new GregorianCalendar();
+        this.eventTypeID = eventTypeID;
+        this.eventData = null;
+        this.adjustedTimeStamp = new GregorianCalendar();
+    }
+        
 	public Punch (int punchID, int terminalID, String badgeID, long 
 				 originalTimeStamp, int eventTypeID, String 
 				 eventData,long adjustedTimeStamp) {
@@ -47,6 +57,64 @@ public class Punch {
         String correctDOW = DOW.toUpperCase();
         return correctDOW;
     }
+
+    public int getPunchID() {
+        return punchID;
+    }
+
+    public void setPunchID(int punchID) {
+        this.punchID = punchID;
+    }
+
+    public int getTerminalID() {
+        return terminalID;
+    }
+
+    public void setTerminalID(int terminalID) {
+        this.terminalID = terminalID;
+    }
+
+    public String getBadgeID() {
+        return badgeID;
+    }
+
+    public void setBadgeID(String badgeID) {
+        this.badgeID = badgeID;
+    }
+
+    public GregorianCalendar getOriginalTimeStamp() {
+        return originalTimeStamp;
+    }
+
+    public void setOriginalTimeStamp(GregorianCalendar originalTimeStamp) {
+        this.originalTimeStamp = originalTimeStamp;
+    }
+
+    public int getEventTypeID() {
+        return eventTypeID;
+    }
+
+    public void setEventTypeID(int eventTypeID) {
+        this.eventTypeID = eventTypeID;
+    }
+
+    public String getEventData() {
+        return eventData;
+    }
+
+    public void setEventData(String eventData) {
+        this.eventData = eventData;
+    }
+
+    public GregorianCalendar getAdjustedTimeStamp() {
+        return adjustedTimeStamp;
+    }
+
+    public void setAdjustedTimeStamp(GregorianCalendar adjustedTimeStamp) {
+        this.adjustedTimeStamp = adjustedTimeStamp;
+    }
+    
+    
 	
 	public String printOriginalTimestamp() {
 		return "#" + badgeID + " " + getEventType(eventTypeID) + correctDOW(originalTimeStamp.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()))

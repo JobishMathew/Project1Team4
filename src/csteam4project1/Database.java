@@ -11,6 +11,7 @@ public class Database{
     private String queryPunches = null;
     private String queryShifts= null;
     private Statement st;
+    private PreparedStatement preparedSt;
     
     public Database() throws ClassNotFoundException{
         try{
@@ -119,7 +120,17 @@ public class Database{
 
         return sc;
     }
-public void close(Statement st){
+
+    public int insertPunch(Punch p) throws SQLException{
+    	String queryInsertPunch = "INSERT INTO event values(?,?,?)";
+    	preparedSt = conn.prepareStatement(queryInsertPunch);
+
+    	int eventID = p.getEventTypeID();
+
+    	return eventID;
+    }
+
+	public void close(Statement st){
         try {
             st.close();
         } 
