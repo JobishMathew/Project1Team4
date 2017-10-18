@@ -125,9 +125,9 @@ public class Database{
     	String queryInsertPunch = "INSERT INTO event values(?,?,?)";
     	preparedSt = conn.prepareStatement(queryInsertPunch);
 
-    	int eventID = p.getEventTypeID();
+    	int punchID = p.getPunchID();
 
-    	return eventID;
+    	return pucnhID;
     }
 
 	public void close(Statement st){
