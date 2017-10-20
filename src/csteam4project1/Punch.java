@@ -119,7 +119,23 @@ public class Punch {
         this.adjustedTimeStamp = adjustedTimeStamp;
     }
     
-    
+    public void adjust(Shift s){
+        long startInMillis = s.getStart().getTime();
+        long stopInMillis = s.getStop().getTime();
+        long lunchStartInMillis = s.getLunchstart().getTime();
+        long lunchStopInMillis = s.getLunchstop().getTime();
+        long originalPunchInMillis = originalTimeStamp.getTimeInMillis();
+
+        if(eventTypeID == 1){
+            //Implement based on Clocked in
+        }
+        else if(eventTypeID == 0){
+            //Implement based on Clocked out
+        }
+        else{
+            //Implement based on Timed out??
+        }
+    }
 	
 	public String printOriginalTimestamp() {
 		return "#" + badgeID + " " + getEventType(eventTypeID) + correctDOW(originalTimeStamp.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()))

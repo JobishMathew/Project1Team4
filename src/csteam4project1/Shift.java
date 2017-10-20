@@ -35,8 +35,58 @@ public class Shift {
     private String getHourMin(Time time){
 
         return time.toString().substring(0, 5);
-	}
+    }
+
+    public int getShiftId() {
+        return shiftId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Time getStart() {
+        return start;
+    }
+
+    public Time getStop() {
+        return stop;
+    }
+
+    public int getInterval() {
+        return interval;
+    }
+
+    public int getGraceperiod() {
+        return graceperiod;
+    }
+
+    public int getDock() {
+        return dock;
+    }
+
+    public Time getLunchstart() {
+        return lunchstart;
+    }
+
+    public Time getLunchstop() {
+        return lunchstop;
+    }
+
+    public int getLunchdeduct() {
+        return lunchdeduct;
+    }
+
+    public int getMaxtime() {
+        return maxtime;
+    }
+
+    public int getOvertimethreshold() {
+        return overtimethreshold;
+    }
 	
+    
+    
 	@Override
 	public String toString(){
 
