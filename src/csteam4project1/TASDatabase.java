@@ -1,10 +1,9 @@
 package csteam4project1;
 import java.sql.*;
-import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Database{
+public class TASDatabase{
     
     private static Connection conn = null;
     private String myUrl = null;
@@ -14,7 +13,7 @@ public class Database{
     private Statement st;
     private Statement preparedSt;
     
-    public Database() throws ClassNotFoundException{
+    public TASDatabase() throws ClassNotFoundException{
         try{
             myUrl = "jdbc:mysql://localhost/tas";
             Class.forName("com.mysql.jdbc.Driver");
@@ -139,7 +138,7 @@ public class Database{
             st.close();
         } 
         catch (SQLException ex) {
-            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

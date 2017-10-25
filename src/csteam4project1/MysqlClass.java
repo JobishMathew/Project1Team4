@@ -1,19 +1,19 @@
 package csteam4project1;
 
-import java.sql.SQLException;
+import java.sql.*;
 
 public class MysqlClass{
 
     public static void main(String[] args) throws ClassNotFoundException, SQLException{
-       Database db = new Database();
-        
-       Badge badge = db.getBadge("D2CC71D4");
-       System.out.println(badge.toString());
+       TASDatabase db = new TASDatabase();
        
-       Punch punch = db.getPunch(42);
-       System.out.println(punch.printOriginalTimestamp());
+       Punch punch = db.getPunch(100);
        
        Shift shift = db.getShift(1);
-       System.out.println(shift.toString());
+
+  		punch.adjust(shift);
+  		System.out.println(punch.printOriginalTimestamp());
+                System.out.println(punch.printAdjustedTimestamp());
+                
     }
 }

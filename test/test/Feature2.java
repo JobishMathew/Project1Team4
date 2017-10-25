@@ -7,12 +7,12 @@ import static org.junit.Assert.*;
 
 public class Feature2 {
     
-    private Database db;
+    private TASDatabase db;
     
     @Before
     public void setup() {
         try{
-        db = new Database();
+        db = new TASDatabase();
         }
         catch(Exception e){}
     }
