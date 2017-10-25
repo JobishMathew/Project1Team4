@@ -1,10 +1,7 @@
 package csteam4project1;
 
-/**
- *
- * @author Aaron Branham and Cole Landers
- */
 public class Badge {
+    
     private String desc;
     private String badgeID;
 

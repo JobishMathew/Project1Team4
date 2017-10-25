@@ -1,6 +1,6 @@
 package test;
 import csteam4project1.Badge;
-import csteam4project1.Database;
+import csteam4project1.TASDatabase;
 import csteam4project1.Punch;
 import csteam4project1.Shift;
 //import edu.jsu.mcis.tas.*;
@@ -10,12 +10,12 @@ import static org.junit.Assert.*;
 
 public class Feature1{
     
-    private Database db;
+    private TASDatabase db;
     
     @Before
     public void setup() {
         try{
-        db = new Database();
+        db = new TASDatabase();
         }
         catch(Exception e){}
     }
