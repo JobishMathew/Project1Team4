@@ -121,84 +121,99 @@ public class Punch {
         GregorianCalendar stop = new GregorianCalendar(originalTimestamp.get(Calendar.YEAR), originalTimestamp.get(Calendar.MONTH), originalTimestamp.get(Calendar.DAY_OF_MONTH), s.getStop().getHours(), s.getStop().getMinutes());
         GregorianCalendar lunchStart = new GregorianCalendar(originalTimestamp.get(Calendar.YEAR), originalTimestamp.get(Calendar.MONTH), originalTimestamp.get(Calendar.DAY_OF_MONTH), s.getLunchstart().getHours(), s.getLunchstart().getMinutes());
         GregorianCalendar lunchStop = new GregorianCalendar(originalTimestamp.get(Calendar.YEAR), originalTimestamp.get(Calendar.MONTH), originalTimestamp.get(Calendar.DAY_OF_MONTH), s.getLunchstop().getHours(), s.getLunchstop().getMinutes());
-        
+        //The first 2 conditionals check for if on weekend
         if(originalTimestamp.get(Calendar.DAY_OF_WEEK) != 7){
             if(originalTimestamp.get(Calendar.DAY_OF_WEEK) != 1){
+                //clocking in (Start or Lunch Stop)
                 if(eventTypeID == 1){
                     if(originalTimestamp.getTimeInMillis() > lunchStart.getTimeInMillis()){
                         adjustedTimestamp.setTimeInMillis(lunchStop.getTimeInMillis());
                         adjustmentType = " (Lunch Stop)";
                     }
+                    //within shift(start) grace period
                     else if((originalTimestamp.get(Calendar.MINUTE) <= (start.get(Calendar.MINUTE) + s.getGraceperiod())) && (originalTimestamp.get(Calendar.HOUR_OF_DAY) == start.get(Calendar.HOUR_OF_DAY))){
                         adjustedTimestamp.setTimeInMillis(start.getTimeInMillis());
                         adjustmentType = " (Shift Start)";
                     }
+                    //before shift(start) within dock
                     else if((originalTimestamp.get(Calendar.MINUTE) >= (start.get(Calendar.MINUTE) + (MINUTES_IN_HOUR - s.getDock())))  && (originalTimestamp.get(Calendar.HOUR_OF_DAY) == start.get(Calendar.HOUR_OF_DAY) -1)){
                         adjustedTimestamp.setTimeInMillis(start.getTimeInMillis());
                         adjustmentType = " (Shift Start)";
                     }
+                    //after shift(start) not within graceperiod, but within dock
                     else if((originalTimestamp.getTimeInMillis() > (start.get(Calendar.MINUTE) + s.getGraceperiod())) && (originalTimestamp.getTimeInMillis() <= start.get(Calendar.MINUTE) + s.getDock())){
                         adjustedTimestamp.setTimeInMillis(start.getTimeInMillis());
                         adjustedTimestamp.roll(Calendar.MINUTE, s.getDock());
                         adjustmentType = " (Shift Start)";
                     }
+                    //no other cases met adjust to nearest interval
                     else{
                         adjustedTimestamp.setTimeInMillis(originalTimestamp.getTimeInMillis());
                         adjustedTimestamp.set(Calendar.SECOND, 0);
                         if(originalTimestamp.get(Calendar.MINUTE) % s.getInterval() != 0){
+                            //nearest interval is less than current # minutes
                             if(originalTimestamp.get(Calendar.MINUTE) % s.getInterval() <= s.getInterval()/2){
                                 adjustedTimestamp.set(Calendar.MINUTE, originalTimestamp.get(Calendar.MINUTE) - originalTimestamp.get(Calendar.MINUTE) % s.getInterval());
                                 adjustmentType = " (Shift Start)";
                             }
+                            //nearest interval is more than current # minutes
                             else{
                                 adjustedTimestamp.set(Calendar.MINUTE, originalTimestamp.get(Calendar.MINUTE) + (s.getInterval() - originalTimestamp.get(Calendar.MINUTE) % s.getInterval()));
                                 adjustmentType = " (Shift Start)";
                             }
                         }
+                        //already at an interval of shift(interval)
                         else {
                             adjustmentType = " (Shift Start)";
                         }
                     }
 
                 }
+                //checks for if someone forgot to clock out? 
                 else if(eventTypeID == 0 && originalTimestamp.get(Calendar.HOUR) > stop.get(Calendar.HOUR)){
                     adjustedTimestamp.setTimeInMillis(originalTimestamp.getTimeInMillis());
                     adjustmentType = " (None)";
                 }
+                //clocking out (Stop or Lunch Start)
                 else if(eventTypeID == 0){
                     if(originalTimestamp.getTimeInMillis() < lunchStop.getTimeInMillis()){
                         adjustedTimestamp.setTimeInMillis(lunchStart.getTimeInMillis());
                         adjustmentType = " (Lunch Start)";
                     }
+                    //within shift(stop) grace period
                     else if((originalTimestamp.get(Calendar.MINUTE) >= (MINUTES_IN_HOUR - s.getGraceperiod())) && (originalTimestamp.get(Calendar.HOUR_OF_DAY) == stop.get(Calendar.HOUR_OF_DAY) - 1)){
                         adjustedTimestamp.setTimeInMillis(stop.getTimeInMillis());
                         adjustmentType = " (Shift Stop)";
                     }
+                    //after shift(stop) within dock
                     else if((originalTimestamp.get(Calendar.MINUTE) <= (stop.get(Calendar.MINUTE) + s.getDock())) && (originalTimestamp.get(Calendar.HOUR_OF_DAY) == stop.get(Calendar.HOUR_OF_DAY))){
                         adjustedTimestamp.setTimeInMillis(stop.getTimeInMillis());
                         adjustmentType = " (Shift Stop)";
                     }
+                    //before shift(stop) not within graceperiod, but within dock
                     else if((originalTimestamp.getTimeInMillis() < (MINUTES_IN_HOUR - s.getGraceperiod())) && (originalTimestamp.getTimeInMillis() >= (MINUTES_IN_HOUR - s.getDock()))){
                         adjustedTimestamp.setTimeInMillis(stop.getTimeInMillis());
                         adjustedTimestamp.roll(Calendar.MINUTE, MINUTES_IN_HOUR - s.getDock());
                         adjustmentType = " (Shift Stop)";
                     }
+                    //no other cases met adjust to nearest interval
                     else{
+                        adjustedTimestamp.setTimeInMillis(originalTimestamp.getTimeInMillis());
+                        adjustedTimestamp.set(Calendar.SECOND, 0);
                         if(originalTimestamp.get(Calendar.MINUTE) % s.getInterval() != 0){
-                            if(originalTimestamp.get(Calendar.MINUTE) % s.getInterval() <= 7){
-                                adjustedTimestamp.setTimeInMillis(originalTimestamp.getTimeInMillis());
+                            //nearest interval is less than current # minutes
+                            if(originalTimestamp.get(Calendar.MINUTE) % s.getInterval() <= s.getInterval()/2){
                                 adjustedTimestamp.set(Calendar.MINUTE, originalTimestamp.get(Calendar.MINUTE) - originalTimestamp.get(Calendar.MINUTE) % s.getInterval());
                                 adjustmentType = " (Shift Stop)";
                             }
+                            //nearest interval is more than current # minutes
                             else{
-                                adjustedTimestamp.setTimeInMillis(originalTimestamp.getTimeInMillis());
                                 adjustedTimestamp.set(Calendar.MINUTE, originalTimestamp.get(Calendar.MINUTE) + (s.getInterval() - originalTimestamp.get(Calendar.MINUTE) % s.getInterval()));
                                 adjustmentType = " (Shift Stop)";
                             }
                         }
+                        //already at an interval of shift(interval)
                         else {
-                            adjustedTimestamp.setTimeInMillis(originalTimestamp.getTimeInMillis());
-                            adjustedTimestamp.set(Calendar.SECOND, 0);
                             adjustmentType = " (Shift Stop)";
                         }
                     }
@@ -210,15 +225,18 @@ public class Punch {
             adjustedTimestamp.setTimeInMillis(originalTimestamp.getTimeInMillis());
             adjustedTimestamp.set(Calendar.SECOND, 0);
             if(originalTimestamp.get(Calendar.MINUTE) % s.getInterval() != 0){
+                //nearest interval is less than current # minutes
                 if(originalTimestamp.get(Calendar.MINUTE) % s.getInterval() <= s.getInterval()/2){
                     adjustedTimestamp.set(Calendar.MINUTE, originalTimestamp.get(Calendar.MINUTE) - originalTimestamp.get(Calendar.MINUTE) % s.getInterval());
                     adjustmentType = " (Interval Round)";
                 }
+                //nearest interval is more than current # minutes
                 else{
                     adjustedTimestamp.set(Calendar.MINUTE, originalTimestamp.get(Calendar.MINUTE) + (s.getInterval() - originalTimestamp.get(Calendar.MINUTE) % s.getInterval()));
                     adjustmentType = " (Interval Round)";
                 }
             }
+            //already at an interval of shift(interval)
             else {
                 adjustmentType = " (Interval Round)";
             }
