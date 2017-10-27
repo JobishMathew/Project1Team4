@@ -3,14 +3,13 @@ import java.util.*;
 
 public class Punch {
     private final int MINUTES_IN_HOUR = 60;
-	private int punchID;
-	private int terminalID;
-	private String badgeID; 
-
-	private GregorianCalendar originalTimestamp;
-	private int eventTypeID;
-	private String eventData;
-	private GregorianCalendar adjustedTimestamp;
+    private int punchID;
+    private int terminalID;
+    private String badgeID; 
+    private GregorianCalendar originalTimestamp;
+    private int eventTypeID;
+    private String eventData;
+    private GregorianCalendar adjustedTimestamp;
     private String adjustmentType;
 
 	
@@ -25,20 +24,20 @@ public class Punch {
         adjustmentType = "";
     }
         
-	public Punch (int punchID, int terminalID, String badgeID, long 
-				 originalTimestamp, int eventTypeID, String 
-				 eventData,long adjustedTimestamp) {
-		this.punchID = punchID;
-		this.terminalID = terminalID;
-		this.badgeID = badgeID;
-		this.originalTimestamp = new GregorianCalendar();
-		this.originalTimestamp.setTimeInMillis(originalTimestamp);
-		this.eventTypeID = eventTypeID;
-		this.eventData = eventData;
-		this.adjustedTimestamp = new GregorianCalendar();
-		this.adjustedTimestamp.setTimeInMillis(adjustedTimestamp);
+    public Punch (int punchID, int terminalID, String badgeID, long 
+                            originalTimestamp, int eventTypeID, String 
+                            eventData,long adjustedTimestamp) {
+        this.punchID = punchID;
+        this.terminalID = terminalID;
+        this.badgeID = badgeID;
+        this.originalTimestamp = new GregorianCalendar();
+        this.originalTimestamp.setTimeInMillis(originalTimestamp);
+        this.eventTypeID = eventTypeID;
+        this.eventData = eventData;
+        this.adjustedTimestamp = new GregorianCalendar();
+        this.adjustedTimestamp.setTimeInMillis(adjustedTimestamp);
         adjustmentType = "";
-	}
+    }
 
     public int getPunchID() {
         return punchID;
@@ -97,9 +96,14 @@ public class Punch {
     }
 
     private String getEventType(int eventTypeID) {
-        if (eventTypeID == 0) return "CLOCKED OUT: ";
-        else if (eventTypeID == 1) return "CLOCKED IN: ";
-        else return "TIMED OUT: ";
+        switch (eventTypeID) {
+            case 0:
+                return "CLOCKED OUT: ";
+            case 1:
+                return "CLOCKED IN: ";
+            default:
+                return "TIMED OUT: ";
+        }
     }
     
     private String padInt(int padding) {
@@ -107,9 +111,9 @@ public class Punch {
         else return padding + "";
     }
         
-    private String correctDOW(String DOW){
-        String correctDOW = DOW.toUpperCase();
-        return correctDOW;
+    private String correctDayOfWeek(String DOW){
+        
+        return DOW.toUpperCase();
     }
     
     public void adjust(Shift s){
@@ -152,8 +156,6 @@ public class Punch {
                             }
                         }
                         else {
-                            adjustedTimestamp.setTimeInMillis(originalTimestamp.getTimeInMillis());
-                            adjustedTimestamp.set(Calendar.SECOND, 0);
                             adjustmentType = " (Shift Start)";
                         }
                     }
@@ -205,9 +207,9 @@ public class Punch {
         }
         //this Case is for weekends
         else{
+            adjustedTimestamp.setTimeInMillis(originalTimestamp.getTimeInMillis());
+            adjustedTimestamp.set(Calendar.SECOND, 0);
             if(originalTimestamp.get(Calendar.MINUTE) % s.getInterval() != 0){
-                adjustedTimestamp.setTimeInMillis(originalTimestamp.getTimeInMillis());
-                adjustedTimestamp.set(Calendar.SECOND, 0);
                 if(originalTimestamp.get(Calendar.MINUTE) % s.getInterval() <= s.getInterval()/2){
                     adjustedTimestamp.set(Calendar.MINUTE, originalTimestamp.get(Calendar.MINUTE) - originalTimestamp.get(Calendar.MINUTE) % s.getInterval());
                     adjustmentType = " (Interval Round)";
@@ -218,21 +220,19 @@ public class Punch {
                 }
             }
             else {
-                adjustedTimestamp.setTimeInMillis(originalTimestamp.getTimeInMillis());
-                adjustedTimestamp.set(Calendar.SECOND, 0);
                 adjustmentType = " (Interval Round)";
             }
         }
     }
     
     public String printOriginalTimestamp() {
-        return "#" + badgeID + " " + getEventType(eventTypeID) + correctDOW(originalTimestamp.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()))
+        return "#" + badgeID + " " + getEventType(eventTypeID) + correctDayOfWeek(originalTimestamp.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()))
         + " " + padInt(originalTimestamp.get(Calendar.MONTH) + 1) + "/" + padInt(originalTimestamp.get(Calendar.DAY_OF_MONTH)) + "/" + originalTimestamp.get(Calendar.YEAR) + 
         " " + padInt(originalTimestamp.get(Calendar.HOUR_OF_DAY)) + ":" + padInt(originalTimestamp.get(Calendar.MINUTE)) + ":" + padInt(originalTimestamp.get(Calendar.SECOND));
     }
         
     public String printAdjustedTimestamp() {
-        return "#" + badgeID + " " + getEventType(eventTypeID) + correctDOW(adjustedTimestamp.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()))
+        return "#" + badgeID + " " + getEventType(eventTypeID) + correctDayOfWeek(adjustedTimestamp.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()))
         + " " + padInt(adjustedTimestamp.get(Calendar.MONTH) + 1) + "/" + padInt(adjustedTimestamp.get(Calendar.DAY_OF_MONTH)) + "/" + adjustedTimestamp.get(Calendar.YEAR) + 
         " " + padInt(adjustedTimestamp.get(Calendar.HOUR_OF_DAY)) + ":" + padInt(adjustedTimestamp.get(Calendar.MINUTE)) + ":" + padInt(adjustedTimestamp.get(Calendar.SECOND)) + adjustmentType;
     }

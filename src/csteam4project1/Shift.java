@@ -16,7 +16,9 @@ public class Shift {
         public int maxtime;
         public int overtimethreshold;
         
-        public Shift(int shiftId, String description, Time Start, Time Stop, int Interval, int Graceperiod, int Dock, Time Lunchstart, Time Lunchstop, int Lunchdeduct, int Maxtime, int Overtimethreshold){
+        public Shift(int shiftId, String description, Time Start, Time Stop, 
+                    int Interval, int Graceperiod, int Dock, Time Lunchstart, 
+                    Time Lunchstop, int Lunchdeduct, int Maxtime, int Overtimethreshold){
 
             this.shiftId = shiftId;
             this.description = description;
@@ -31,11 +33,6 @@ public class Shift {
             this.maxtime = Maxtime;
             this.overtimethreshold = Overtimethreshold;
         }
-        
-    private String getHourMin(Time time){
-
-        return time.toString().substring(0, 5);
-    }
 
     public int getShiftId() {
         return shiftId;
@@ -84,12 +81,14 @@ public class Shift {
     public int getOvertimethreshold() {
         return overtimethreshold;
     }
-	
-    
-    
-	@Override
-	public String toString(){
+        
+    private String getHourMin(Time time){
 
-		return description + ": " + getHourMin(start) + " - " + getHourMin(stop) + " (510 minutes); Lunch: " + getHourMin(lunchstart) + " - " + getHourMin(lunchstop) + " (30 minutes)";
-	}  
+        return time.toString().substring(0, 5);
+    }
+    
+    public String toString(){
+
+            return description + ": " + getHourMin(start) + " - " + getHourMin(stop) + " (510 minutes); Lunch: " + getHourMin(lunchstart) + " - " + getHourMin(lunchstop) + " (30 minutes)";
+    }  
 }

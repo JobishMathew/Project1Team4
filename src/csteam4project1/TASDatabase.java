@@ -62,7 +62,6 @@ public class TASDatabase{
         long adjustedTimestamp = 0;
         Timestamp adjTimestamp = null;
         
-        
         while(rs.next()){
             punchID = rs.getInt("id");
             terminalId = rs.getInt("terminalid");
@@ -99,7 +98,6 @@ public class TASDatabase{
         int maxTime = 0;
         int overTimeThreshold = 0;
         
-        
         while(rs.next()){
             shiftId = rs.getInt("id");
             description = rs.getString("description");
@@ -128,12 +126,12 @@ public class TASDatabase{
         int eventTypeID = p.getEventTypeID();
         
     	preparedSt = conn.createStatement();
-    	int queryInsertPunch = preparedSt.executeUpdate("INSERT INTO event (terminalid, badgeid, eventtypeid) VALUES(" + terminalID+","+ badgeID+ ","+ eventTypeID+")");
+    	int queryInsertPunch = preparedSt.executeUpdate("INSERT INTO event (terminalid, badgeid, eventtypeid) VALUES(" + terminalID + ","+ badgeID + "," + eventTypeID + ")");
 
     	return queryInsertPunch;
     }
 
-	public void close(Statement st){
+    public void close(Statement st){
         try {
             st.close();
         } 

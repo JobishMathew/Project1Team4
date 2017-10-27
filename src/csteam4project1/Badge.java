@@ -13,12 +13,19 @@ public class Badge {
     public String getDescription() {
         return desc;
     }
+    
+    public void setDescription(String desc) {
+        this.desc = desc;
+    }
 
     public String getBadgeID() {
         return badgeID;
     }
+    
+    public void setBadgeID(String badgeID) {
+        this.badgeID = badgeID;
+    }
 
-    @Override
     public String toString() {
         return "#" + badgeID + " (" + getDescription() + ")";
     }
