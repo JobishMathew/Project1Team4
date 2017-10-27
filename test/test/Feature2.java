@@ -27,7 +27,7 @@ public class Feature2 {
 		/* Get Punch Properties */
         
         String badgeid = p1.getBadgeID();
-        String originaltimestamp = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(p1.getOriginalTimeStamp().getTime());
+        String originaltimestamp = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(p1.getOriginalTimestamp().getTime());
         int terminalid = p1.getTerminalID();
         int eventtypeid = p1.getEventTypeID();
 		
@@ -41,7 +41,7 @@ public class Feature2 {
         
 		/* Compare Punches */
         assertEquals(badgeid, p2.getBadgeID());
-        assertEquals(originaltimestamp, (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(p2.getOriginalTimeStamp().getTime()));
+        assertEquals(originaltimestamp, (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(p2.getOriginalTimestamp().getTime()));
         assertEquals(terminalid, p2.getTerminalID());
         assertEquals(eventtypeid, p2.getEventTypeID());
         }
