@@ -122,6 +122,9 @@ public class Punch {
         GregorianCalendar lunchStart = new GregorianCalendar(originalTimestamp.get(Calendar.YEAR), originalTimestamp.get(Calendar.MONTH), originalTimestamp.get(Calendar.DAY_OF_MONTH), s.getLunchstart().getHours(), s.getLunchstart().getMinutes());
         GregorianCalendar lunchStop = new GregorianCalendar(originalTimestamp.get(Calendar.YEAR), originalTimestamp.get(Calendar.MONTH), originalTimestamp.get(Calendar.DAY_OF_MONTH), s.getLunchstop().getHours(), s.getLunchstop().getMinutes());
 
+        GregorianCalendar grace = new GregorianCalendar();
+        GregorianCalendar dock = new GregorianCalendar();
+        
         if(originalTimestamp.get(Calendar.DAY_OF_WEEK) == 7 || originalTimestamp.get(Calendar.DAY_OF_WEEK) == 1){
             adjustedTimestamp.setTimeInMillis(originalTimestamp.getTimeInMillis());
             adjustedTimestamp.set(Calendar.SECOND, 0);
@@ -136,11 +139,16 @@ public class Punch {
             adjustmentType = " (Interval Round)";
         }
         else if(eventTypeID == 1){
+            grace.setTimeInMillis(start.getTimeInMillis());
+            grace.roll(Calendar.MINUTE, s.getGraceperiod());
+            dock.setTimeInMillis(start.getTimeInMillis());
+            dock.roll(Calendar.MINUTE, s.getDock());
+            
             if(originalTimestamp.getTimeInMillis() > lunchStart.getTimeInMillis()){
                 adjustedTimestamp.setTimeInMillis(lunchStop.getTimeInMillis());
                 adjustmentType = " (Lunch Stop)";
             }
-            else if((originalTimestamp.get(Calendar.MINUTE) <= (start.get(Calendar.MINUTE) + s.getGraceperiod())) && (originalTimestamp.get(Calendar.HOUR_OF_DAY) == start.get(Calendar.HOUR_OF_DAY))){
+            else if((originalTimestamp.getTimeInMillis() <= grace.getTimeInMillis()) && (originalTimestamp.get(Calendar.HOUR_OF_DAY) == grace.get(Calendar.HOUR_OF_DAY))){
                 adjustedTimestamp.setTimeInMillis(start.getTimeInMillis());
                 adjustmentType = " (Shift Start)";
             }
@@ -148,10 +156,10 @@ public class Punch {
                 adjustedTimestamp.setTimeInMillis(start.getTimeInMillis());
                 adjustmentType = " (Shift Start)";
             }
-            else if((originalTimestamp.getTimeInMillis() > (start.get(Calendar.MINUTE) + s.getGraceperiod())) && (originalTimestamp.getTimeInMillis() <= start.get(Calendar.MINUTE) + s.getDock())){
+            else if((originalTimestamp.get(Calendar.MINUTE) > (start.get(Calendar.MINUTE) + s.getGraceperiod())) && (originalTimestamp.get(Calendar.HOUR_OF_DAY) <= start.get(Calendar.MINUTE) + s.getDock())){
                 adjustedTimestamp.setTimeInMillis(start.getTimeInMillis());
                 adjustedTimestamp.roll(Calendar.MINUTE, s.getDock());
-                adjustmentType = " (Shift Start)";
+                adjustmentType = " (Shift Dock)";
             }
             else{
                 adjustedTimestamp.setTimeInMillis(originalTimestamp.getTimeInMillis());
@@ -163,40 +171,50 @@ public class Punch {
                     else{
                         adjustedTimestamp.set(Calendar.MINUTE, originalTimestamp.get(Calendar.MINUTE) + (s.getInterval() - originalTimestamp.get(Calendar.MINUTE) % s.getInterval()));
                     }
-                    adjustmentType = " (Shift Start)";
+                    adjustmentType = " (Interval Round)";
                 }
                 else {adjustmentType = " (None)";}
             }
         }
         else if(eventTypeID == 0){
-            if(originalTimestamp.getTimeInMillis() < lunchStop.getTimeInMillis()){
-                adjustedTimestamp.setTimeInMillis(lunchStart.getTimeInMillis());
-                adjustmentType = " (Lunch Start)";
-            }
-            else if((originalTimestamp.get(Calendar.MINUTE) >= (MINUTES_IN_HOUR - s.getGraceperiod())) && (originalTimestamp.get(Calendar.HOUR_OF_DAY) == stop.get(Calendar.HOUR_OF_DAY) - 1)){
+            grace.setTimeInMillis(stop.getTimeInMillis());
+            grace.roll(Calendar.MINUTE, -1 * s.getGraceperiod());
+            dock.setTimeInMillis(stop.getTimeInMillis());
+            dock.roll(Calendar.MINUTE, -1 * s.getDock());
+            
+            if((originalTimestamp.getTimeInMillis() >= grace.getTimeInMillis()) && (originalTimestamp.get(Calendar.HOUR_OF_DAY) == grace.get(Calendar.HOUR_OF_DAY))){
                 adjustedTimestamp.setTimeInMillis(stop.getTimeInMillis());
                 adjustmentType = " (Shift Stop)";
             }
-            else if((originalTimestamp.get(Calendar.MINUTE) <= (stop.get(Calendar.MINUTE) + s.getDock())) && (originalTimestamp.get(Calendar.HOUR_OF_DAY) == stop.get(Calendar.HOUR_OF_DAY))){
+            else if((originalTimestamp.getTimeInMillis() > dock.getTimeInMillis()) && (originalTimestamp.get(Calendar.HOUR_OF_DAY) == dock.get(Calendar.HOUR_OF_DAY))){
                 adjustedTimestamp.setTimeInMillis(stop.getTimeInMillis());
                 adjustmentType = " (Shift Stop)";
             }
-            else if((originalTimestamp.getTimeInMillis() < (MINUTES_IN_HOUR - s.getGraceperiod())) && (originalTimestamp.getTimeInMillis() >= (MINUTES_IN_HOUR - s.getDock()))){
+            else if((originalTimestamp.getTimeInMillis() < grace.getTimeInMillis()) && (originalTimestamp.getTimeInMillis() >= dock.getTimeInMillis())){
                 adjustedTimestamp.setTimeInMillis(stop.getTimeInMillis());
                 adjustedTimestamp.roll(Calendar.MINUTE, MINUTES_IN_HOUR - s.getDock());
-                adjustmentType = " (Shift Stop)";
+                adjustmentType = " (Shift Dock)";
+            }
+            else if(originalTimestamp.getTimeInMillis() < lunchStop.getTimeInMillis()){
+                adjustedTimestamp.setTimeInMillis(lunchStart.getTimeInMillis());
+                adjustmentType = " (Lunch Start)";
             }
             else{
                 adjustedTimestamp.setTimeInMillis(originalTimestamp.getTimeInMillis());
                 if(originalTimestamp.get(Calendar.MINUTE) % s.getInterval() != 0){
                     adjustedTimestamp.set(Calendar.SECOND, 0);
-                    if(originalTimestamp.get(Calendar.MINUTE) % s.getInterval() <= s.getInterval()/2){
+                    if((originalTimestamp.get(Calendar.MINUTE) % s.getInterval() <= s.getInterval()/2)){
+                        if((originalTimestamp.get(Calendar.MINUTE) % s.getInterval() == s.getInterval()/2) && originalTimestamp.get(Calendar.SECOND) > 0){
+                            adjustedTimestamp.set(Calendar.MINUTE, originalTimestamp.get(Calendar.MINUTE) + (s.getInterval() - originalTimestamp.get(Calendar.MINUTE) % s.getInterval()));
+                        }
+                        else{
                         adjustedTimestamp.set(Calendar.MINUTE, originalTimestamp.get(Calendar.MINUTE) - originalTimestamp.get(Calendar.MINUTE) % s.getInterval());
+                        }
                     }
                     else{
                         adjustedTimestamp.set(Calendar.MINUTE, originalTimestamp.get(Calendar.MINUTE) + (s.getInterval() - originalTimestamp.get(Calendar.MINUTE) % s.getInterval()));
                     }
-                    adjustmentType = " (Shift Stop)";
+                    adjustmentType = " (Interval Round)";
                 }
                 else {adjustmentType = " (None)";}
             }
