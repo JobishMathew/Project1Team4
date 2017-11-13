@@ -12,7 +12,6 @@ public class Punch {
     private GregorianCalendar adjustedTimestamp;
     private String adjustmentType;
 
-	
     public Punch(String badgeID, int terminalID, int eventTypeID){
         this.punchID = 0;
         this.terminalID = terminalID;
@@ -37,6 +36,10 @@ public class Punch {
         this.adjustedTimestamp = new GregorianCalendar();
         this.adjustedTimestamp.setTimeInMillis(adjustedTimestamp);
         adjustmentType = "";
+    }
+    
+    public Punch() {
+        this(0 , 0 , "", 0, 0, "", 0);
     }
 
     public int getPunchID() {
@@ -106,6 +109,10 @@ public class Punch {
         }
     }
     
+    public String getAdjustmentType(){
+        return adjustmentType;
+    }
+    
     private String padInt(int padding) {
         if (padding < 10) return "0" + padding;
         else return padding + "";
@@ -116,7 +123,7 @@ public class Punch {
         return DOW.toUpperCase();
     }
     
-    public void adjust(Shift s){
+     public void adjust(Shift s){
         GregorianCalendar start = new GregorianCalendar(originalTimestamp.get(Calendar.YEAR), originalTimestamp.get(Calendar.MONTH), originalTimestamp.get(Calendar.DAY_OF_MONTH), s.getStart().getHours(), s.getStart().getMinutes());
         GregorianCalendar stop = new GregorianCalendar(originalTimestamp.get(Calendar.YEAR), originalTimestamp.get(Calendar.MONTH), originalTimestamp.get(Calendar.DAY_OF_MONTH), s.getStop().getHours(), s.getStop().getMinutes());
         GregorianCalendar lunchStart = new GregorianCalendar(originalTimestamp.get(Calendar.YEAR), originalTimestamp.get(Calendar.MONTH), originalTimestamp.get(Calendar.DAY_OF_MONTH), s.getLunchstart().getHours(), s.getLunchstart().getMinutes());
