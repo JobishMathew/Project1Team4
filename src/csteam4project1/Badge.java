@@ -4,8 +4,12 @@ public class Badge {
     
     private String desc;
     private String badgeID;
+    
+    public Badge() {
+        this("0000000", "Empty Employee");
+    }
 
-	public Badge(String badgeID, String desc){
+    public Badge(String badgeID, String desc){
         this.badgeID = badgeID;
         this.desc = desc;
     }
