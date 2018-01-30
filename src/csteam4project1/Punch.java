@@ -143,7 +143,7 @@ public class Punch {
                     adjustedTimestamp.set(Calendar.MINUTE, originalTimestamp.get(Calendar.MINUTE) + (s.getInterval() - originalTimestamp.get(Calendar.MINUTE) % s.getInterval()));
                 }
             }
-            adjustmentType = " (Interval Round)";
+            adjustmentType = "Interval Round";
         }
         else if(eventTypeID == 1){
             grace.setTimeInMillis(start.getTimeInMillis());
@@ -153,20 +153,20 @@ public class Punch {
             
             if(originalTimestamp.getTimeInMillis() > lunchStart.getTimeInMillis()){
                 adjustedTimestamp.setTimeInMillis(lunchStop.getTimeInMillis());
-                adjustmentType = " (Lunch Stop)";
+                adjustmentType = "Lunch Stop";
             }
             else if((originalTimestamp.getTimeInMillis() <= grace.getTimeInMillis()) && (originalTimestamp.get(Calendar.HOUR_OF_DAY) == grace.get(Calendar.HOUR_OF_DAY))){
                 adjustedTimestamp.setTimeInMillis(start.getTimeInMillis());
-                adjustmentType = " (Shift Start)";
+                adjustmentType = "Shift Start";
             }
             else if((originalTimestamp.get(Calendar.MINUTE) >= (start.get(Calendar.MINUTE) + (MINUTES_IN_HOUR - s.getDock())))  && (originalTimestamp.get(Calendar.HOUR_OF_DAY) == start.get(Calendar.HOUR_OF_DAY) -1)){
                 adjustedTimestamp.setTimeInMillis(start.getTimeInMillis());
-                adjustmentType = " (Shift Start)";
+                adjustmentType = "Shift Start";
             }
             else if((originalTimestamp.get(Calendar.MINUTE) > (start.get(Calendar.MINUTE) + s.getGraceperiod())) && (originalTimestamp.get(Calendar.HOUR_OF_DAY) <= start.get(Calendar.MINUTE) + s.getDock())){
                 adjustedTimestamp.setTimeInMillis(start.getTimeInMillis());
                 adjustedTimestamp.roll(Calendar.MINUTE, s.getDock());
-                adjustmentType = " (Shift Dock)";
+                adjustmentType = "Shift Dock";
             }
             else{
                 adjustedTimestamp.setTimeInMillis(originalTimestamp.getTimeInMillis());
@@ -178,9 +178,9 @@ public class Punch {
                     else{
                         adjustedTimestamp.set(Calendar.MINUTE, originalTimestamp.get(Calendar.MINUTE) + (s.getInterval() - originalTimestamp.get(Calendar.MINUTE) % s.getInterval()));
                     }
-                    adjustmentType = " (Interval Round)";
+                    adjustmentType = "Interval Round";
                 }
-                else {adjustmentType = " (None)";}
+                else {adjustmentType = "None";}
             }
         }
         else if(eventTypeID == 0){
@@ -191,20 +191,20 @@ public class Punch {
             
             if((originalTimestamp.getTimeInMillis() >= grace.getTimeInMillis()) && (originalTimestamp.get(Calendar.HOUR_OF_DAY) == grace.get(Calendar.HOUR_OF_DAY))){
                 adjustedTimestamp.setTimeInMillis(stop.getTimeInMillis());
-                adjustmentType = " (Shift Stop)";
+                adjustmentType = "Shift Stop";
             }
             else if((originalTimestamp.getTimeInMillis() > dock.getTimeInMillis()) && (originalTimestamp.get(Calendar.HOUR_OF_DAY) == dock.get(Calendar.HOUR_OF_DAY))){
                 adjustedTimestamp.setTimeInMillis(stop.getTimeInMillis());
-                adjustmentType = " (Shift Stop)";
+                adjustmentType = "Shift Stop";
             }
             else if((originalTimestamp.getTimeInMillis() < grace.getTimeInMillis()) && (originalTimestamp.getTimeInMillis() >= dock.getTimeInMillis())){
                 adjustedTimestamp.setTimeInMillis(stop.getTimeInMillis());
                 adjustedTimestamp.roll(Calendar.MINUTE, MINUTES_IN_HOUR - s.getDock());
-                adjustmentType = " (Shift Dock)";
+                adjustmentType = "Shift Dock";
             }
             else if(originalTimestamp.getTimeInMillis() < lunchStop.getTimeInMillis()){
                 adjustedTimestamp.setTimeInMillis(lunchStart.getTimeInMillis());
-                adjustmentType = " (Lunch Start)";
+                adjustmentType = "Lunch Start";
             }
             else{
                 adjustedTimestamp.setTimeInMillis(originalTimestamp.getTimeInMillis());
@@ -221,9 +221,9 @@ public class Punch {
                     else{
                         adjustedTimestamp.set(Calendar.MINUTE, originalTimestamp.get(Calendar.MINUTE) + (s.getInterval() - originalTimestamp.get(Calendar.MINUTE) % s.getInterval()));
                     }
-                    adjustmentType = " (Interval Round)";
+                    adjustmentType = "Interval Round";
                 }
-                else {adjustmentType = " (None)";}
+                else {adjustmentType = "None";}
             }
         }
     }
@@ -237,6 +237,6 @@ public class Punch {
     public String printAdjustedTimestamp() {
         return "#" + badgeID + " " + getEventType(eventTypeID) + correctDayOfWeek(adjustedTimestamp.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()))
         + " " + padInt(adjustedTimestamp.get(Calendar.MONTH) + 1) + "/" + padInt(adjustedTimestamp.get(Calendar.DAY_OF_MONTH)) + "/" + adjustedTimestamp.get(Calendar.YEAR) + 
-        " " + padInt(adjustedTimestamp.get(Calendar.HOUR_OF_DAY)) + ":" + padInt(adjustedTimestamp.get(Calendar.MINUTE)) + ":" + padInt(adjustedTimestamp.get(Calendar.SECOND)) + adjustmentType;
+        " " + padInt(adjustedTimestamp.get(Calendar.HOUR_OF_DAY)) + ":" + padInt(adjustedTimestamp.get(Calendar.MINUTE)) + ":" + padInt(adjustedTimestamp.get(Calendar.SECOND)) + " (" +adjustmentType+ ")";
     }
 }
